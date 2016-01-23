@@ -16,5 +16,5 @@ digraph ChoicePrinciples {
 	    "No Infinite Descending Chain/Proof 1";
 	    "Regularity" -> "No Infinite Descending Chain/Proof 1";
 	    "Axiom of Choice" -> "No Infinite Descending Chain/Proof 1";
-	    "No Infinite Descending Chain/Proof 1" -> "No Infinite Descending Chain"
+	    "No Infinite Descending Chain/Proof 1" -> "No Infinite Descending Chain";
 }
