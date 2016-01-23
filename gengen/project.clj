@@ -1,8 +1,8 @@
-(defproject gengen "0.1.0-SNAPSHOT"
+(defproject gengen "0.0.1-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "Affero GNU General Public License (version 3.0+)"
+            :url "http://www.gnu.org/licenses/agpl.html"}
   :dependencies [ [org.clojure/clojure "1.8.0"]
                   [ubergraph "0.1.9"]
                   [instaparse "1.4.1"]
