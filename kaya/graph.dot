@@ -1,0 +1,20 @@
+digraph ChoicePrinciples {
+	    "Generalized Continuum Hypothesis" -> "Axiom of Choice";
+	    "Generalized Continuum Hypothesis" -> "Continuum Hypothesis";
+	    "Axiom of Choice" -> "Ultrafilter Lemma";
+	    "Global Choice" -> "Axiom of Choice";
+	    "Axiom of Choice" -> "Basis Theorem";
+	    "Basis Theorem" -> "Axiom of Choice";
+	    "Axiom of Choice" -> "Dependent Choice";
+	    "Dependent Choice" -> "Countable Choice";
+	    "Dependent Choice" -> "Baire Category Theorem";
+	    "Baire Category Theorem" -> "Dependent Choice";
+	    "Boolean Prime Ideal Theorem" -> "Ultrafilter Lemma";
+	    "Ultrafilter Lemma" -> "Boolean Prime Ideal Theorem";
+	    "V=L" -> "Generalized Continuum Hypothesis";
+	    "V=L" -> "Global Choice";
+	    "No Infinite Descending Chain/Proof 1"; [label="\wedge"][shape=box];
+	    "Regularity" -> "No Infinite Descending Chain/Proof 1";
+	    "Axiom of Choice" -> "No Infinite Descending Chain/Proof 1";
+	    "No Infinite Descending Chain/Proof 1" -> "No Infinite Descending Chain"
+}

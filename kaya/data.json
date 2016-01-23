@@ -1,0 +1,8 @@
+{
+	"Lob's Theorem": {
+		"statement":"$\square(\square x\rightarrow x)\rightarrow\square x$",
+		"proofs": [
+			{"proof":"TODO 1","depends":["TODO"]}
+		]
+	}
+}

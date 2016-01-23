@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Force Layout Example 1</title>
+		<style>
+
+			.node {
+				fill: #ccc;
+				stroke: #fff;
+				stroke-width: 2px;
+			}
+			text {
+				stroke: #000;
+				stroke-width: 0.35px;
+			}
+			.link {
+				stroke: #777;
+				stroke-width: 2px;
+			}
+
+		</style>
+	</head>
+	<body>
+	</body>
+	<script src='http://d3js.org/d3.v3.min.js'></script>
+	<script>
+		// Set up SVG (SVG is a js library for manipulating and animating vector graphics)
+		var width = 960, //TODO3 make responsive
+		    height = 500,
+		    colors = d3.scale.category10(); //TODO3 I am not sure what this does. Probably makes all the nodes colored differently?
+
+		var svg = d3.select('body')
+		            .append('svg') //TODO3 I guess this is creating the svg object and then setting 
+		                           //  - a bunch of attributes (setters return the object, so you can apply a lot of them)
+			    .attr('width', width)
+			    .attr('height', height);
+
+		// set up initial nodes and links
+		//  - nodes are known by 'id', not by index in array.
+		//  - links are always source < target; edge directions are set by 'left' and 'right'.
+		//TODO1 make this read from a data source
+		var nodes = [];
+		var links = [];
+		d3.json("https://raw.githubusercontent.com/from3004/theorems/master/graph.json", function(error, graph) {
+			if (error) throw error;
+			
+			nodes = graph.nodes;
+			links = graph.links;
+		})
+
+		
+		var nodes = [
+		  {id: 0},
+		  {id: 1},
+		  {id: 2}
+		],
+		links = [
+		  {source: nodes[0], target: nodes[1], left: false, right: true },
+		  {source: nodes[1], target: nodes[2], left: false, right: true }
+		];
+
+		//Init the actual D3 Force layout
+		var force = d3.layout.force()
+		  .nodes(nodes)
+		  .links(links)
+		  .size([width,height])
+		  .linkDistance(150) // Affects how the layout attempts to space nodes
+		  .charge(-500) // helps deal with overlaps; another way to help space the nodes
+		
+		//make the arrows
+		svg.append("defs").selectAll("marker")
+			.data(["end"])
+			.enter().append("marker")
+			.attr("id", String)
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 15)
+			.attr("refY", 0)
+			.attr("markerWidth", 5)
+			.attr("markerHeight", 5)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M0,-5L10,0L0,5")
+
+		// make links and nodes be a thing
+		var link = svg.selectAll('.link')
+			.data(links)
+			.enter().append("svg:path")
+			.attr("class", "link")
+			.attr("marker-end", "url(#end)");
+
+		var node = svg.selectAll('.node')
+			.data(nodes)
+			.enter().append('g')
+			.attr('class', 'node')
+			.call(force.drag); // this bit allows us to drag nodes and stuff around		
+		node.append("circle")
+			.attr('r',5);
+		node.append("text")
+			//.attr("x", 12)
+			//.attr("dy", ".35em")
+			//.attr("stroke","black")
+			.text(function(d) { return d.id;});
+
+		
+
+		//update stuff in realtime with the force layout
+		force.on("tick", function() {
+			link.attr("d", function(d) {
+				var dx = d.target.x - d.source.x,
+				dy = d.target.y - d.source.y,
+				dr = 0;
+				return "M" + 
+				d.source.x + "," + 
+				d.source.y + "A" + 
+				dr + "," + dr + " 0 0,1 " + 
+				d.target.x + "," + 
+				d.target.y;
+			});
+
+			node
+			.attr("transform", function(d) { 
+				return "translate(" + d.x + "," + d.y + ")"; });
+		});
+
+		
+		// It begins!
+		force.start();
+
+	</script>
+</html>
+
+
+
+
