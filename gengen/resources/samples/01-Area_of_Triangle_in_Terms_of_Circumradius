@@ -1,0 +1,80 @@
+<!--{{Previous POTW|12th September 2015}}-->
+== Theorem ==
+<onlyinclude>
+Let $\triangle ABC$ be a [[Definition:Triangle (Geometry)|triangle]] whose [[Definition:Side of Polygon|sides]] are of [[Definition:Length (Linear Measure)|lengths]] $a, b, c$.
+
+
+Then the [[Definition:Area|area]] $\mathcal A$ of $\triangle ABC$ is given by:
+:$\mathcal A = \dfrac {a b c} {4 R}$
+where $R$ is the [[Definition:Circumradius of Triangle|circumradius]] of $\triangle ABC$.
+</onlyinclude>
+
+== Proof ==
+
+:[[File:CircumradiusLengthProof.png|400px]]
+
+Let $O$ be the [[Definition:Circumcenter of Triangle|circumcenter]] of $\triangle ABC$.
+
+Let $\mathcal A$ be the [[Definition:Area|area]] of $\triangle ABC$.
+
+Let a [[Definition:Perpendicular|perpendicular]] be dropped from $C$ to $AB$ at $E$.
+
+Let $h := CE$.
+
+Then:
+
+{{begin-eqn}}
+{{eqn | l = \mathcal A
+      | r = \frac {c h} 2
+      | c = [[Area of Triangle in Terms of Side and Altitude]]
+}}
+{{eqn | n = 1
+      | ll= \implies
+      | l = h
+      | r = \frac {2 \mathcal A} c
+      | c = 
+}}
+{{end-eqn}}
+
+
+Let a [[Definition:Diameter of Circle|diameter]] $CD$ of the [[Definition:Circumcircle of Triangle|circumcircle]] be passed through $O$.
+
+By definition of [[Definition:Circumradius of Triangle|circumradius]], $CD = 2 R$.
+
+By [[Thales' Theorem]], $\angle CAD$ is a [[Definition:Right Angle|right angle]].
+
+By [[Angles on Equal Arcs are Equal]], $\angle ADC = \angle ABC$.
+
+It follows from [[Sum of Angles of Triangle Equals Two Right Angles]] that $\angle ACD = \angle ECB$.
+
+Thus by [[Equiangular Triangles are Similar]] $\triangle DAC$ and $\triangle BEC$ are [[Definition:Similar Triangles|similar]].
+
+
+So:
+{{begin-eqn}}
+{{eqn | l = \frac {CA} {CD}
+      | r = \frac {CE} {CB}
+      | c = $\triangle DAC$ and $\triangle BEC$ are [[Definition:Similar Triangles|similar]]
+}}
+{{eqn | ll= \implies
+      | l = \frac b {2 R}
+      | r = \frac h a
+      | c = 
+}}
+{{eqn | r = \frac {2 \mathcal A} {a c}
+      | c = substituting for $h$ from $(1)$ above
+}}
+{{eqn | ll= \implies
+      | l = \mathcal A
+      | r = \frac {a b c} {4 R}
+      | c = 
+}}
+{{end-eqn}}
+{{qed}}
+
+
+== Sources ==
+
+* {{KhanAcademySecure|geometry/triangle-properties/perpendicular_bisectors/v/area-circumradius-formula-proof}}
+
+[[Category:Areas of Triangles]]
