@@ -3,9 +3,11 @@
   (:gen-class))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (let [in (slurp *in*)]
+    (print (insta/transform (cull) (depscan in))))
+  (flush)) ; Hopefully I can avoid spending hours of my life here.
+
 
 (def whitespace (insta/parser
                   "whitespace ::= (spaces | comment)+
@@ -18,3 +20,18 @@
 (def sampletree (insta/parse depscan (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext.txt")))
 
 (insta/visualize sampletree)
+
+(defn cull
+  []
+  {:html_comment ''
+   :word str
+   :header ''
+   :header_text ''
+   :claim ''
+   :section ''
+   :section-content ''
+   :inlink str
+   :content_char ''
+   :whitespace ''
+   :reserved '' }
+  )
