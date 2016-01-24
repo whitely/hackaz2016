@@ -7,11 +7,11 @@
   [& args]
   (println "Hello, World!"))
 
-(System/getProperty "java.vm.version")
+(def whitespace (insta/parser
+                  "whitespace ::= (spaces | comment)+
+                   comment ::= #'(?s)<!--.*?-->'
+                   spaces ::= #'[\\s\\v]+'"))
 
-(def shortspace (insta/parser "whitespace ::= #'[\\s+&&[^\n]]+'"))
-(def tallspace (insta/parser "whitespace ::= #'[\\s\\n]+'"))
-
-(def depscan (insta/parser "resources/grammars/proofwiki-simple.ebnf" :options {:auto-whitespace tallspace}))
+(def depscan (insta/parser "resources/grammars/proofwiki-simple.ebnf" :options {:auto-whitespace whitespace}))
 
 (insta/parse depscan (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext.txt"))

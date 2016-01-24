@@ -1,0 +1,15 @@
+(* this picks out the shit we care about! *)
+
+document     ::= html_comment? section+
+html_comment ::= #'<!--.*?-->'
+<whitespace> ::= #'\s+'
+
+header       ::= '=' (header | #'\s+' header_text+ #'\s+') '='
+header_text  ::= #'[\p{Alnum}]'
+claim        ::= #'[Dd]efinition' | #'[Pp]roof' | #'[Tt]heorem' | #'\w+'
+
+
+section         ::= header section_content ( &header | #'$')
+section_content ::= phrase+
+phrase          ::= <phrase> char-or-space | ε
+<char-or-space>   ::= #'[\p{Print}\s]+'
