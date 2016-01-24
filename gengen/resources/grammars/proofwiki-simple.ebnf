@@ -1,11 +1,14 @@
 (* this picks out the shit we care about! *)
 
-document = section_content* section+
+document     ::= html_comment? #'\s+'? section section
 
-header = '=' (header | header_text) '='
-header_text = (proof | definition) / #'\s+[\p{Punct}\p{Alnum}\s]+\s+'
-proof = #'\s+[Pp]roof\s+'
-definition = #'\s+[Dd]efinition\s+'
+html_comment ::= #'<!--.*?-->'
+word         ::= #'[\p{ASCII}&&[\p{Alnum}\p{Punct}]]+'
 
-section = header section_content ( &header | '^$')
-section_content = <section_content>? #'[\p{Print}]' | ε
+header       ::= '=' (header | header_text ) '='
+header_text  ::= #'\s+' claim #'\s+'
+claim        ::= #'[Dd]efinition' | #'[Pp]roof' | #'[Tt]heorem'
+
+
+section = header #'[\p{Space}]'? section_content+ ( &header | #'\z')
+section_content = #'[\s\p{Print}]'+
