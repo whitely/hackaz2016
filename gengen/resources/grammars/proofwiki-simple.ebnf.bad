@@ -1,7 +1,7 @@
 (* this picks out the shit we care about! *)
 
 document     ::= html_comment? section+
-html_comment ::= #'<!--.*?-->'
+<html_comment> ::= #'<!--.*?-->'
 <whitespace> ::= #'\s+'
 
 header       ::= '=' (header | #'\s+' header_text+ #'\s+') '='
