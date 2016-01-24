@@ -1,0 +1,11 @@
+(* this picks out the shit we care about! *)
+
+document = section_content* section+
+
+header = '=' (header | header_text) '='
+header_text = (proof | definition) / #'\s+[\p{Punct}\p{Alnum}\s]+\s+'
+proof = #'\s+[Pp]roof\s+'
+definition = #'\s+[Dd]efinition\s+'
+
+section = header section_content ( &header | '^$')
+section_content = <section_content>? #'[\p{Print}]' | ε
