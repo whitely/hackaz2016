@@ -10,10 +10,9 @@ header_text  ::= #'\s+' claim #'\s+'
 claim        ::= #'[Dd]efinition' | #'[Pp]roof' | #'[Tt]heorem'
 
 
-section         ::= header #'[\p{Space}]'* section_content <whitespace>* ( (&header) | #'\z')
+<section>         ::= header #'[\p{Space}]'* section_content <whitespace>* ( (&header) | #'\z')
 (* section_content ::= (inlink / (<whitespace> | content_char))* *)
 section_content ::= (inlink / <content_char>*)*
-(* inlink          ::= #'(?s)\[\[.*?]]' *)
 inlink          ::= #'(?s)\[\[.*?]]'
 <content_char>  ::= #'[\p{Print}\s]'
 whitespace      ::= #'\s+'

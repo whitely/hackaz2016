@@ -14,7 +14,9 @@
 
 (def depscan (insta/parser "resources/grammars/proofwiki-simple.ebnf" :options {:auto-whitespace whitespace}))
 
-(insta/parse depscan (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext.txt"))
+(insta/parse depscan
+             (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext.txt")
+             )
 (def sampletree (insta/parse depscan (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext.txt")))
 
 (insta/visualize sampletree)
