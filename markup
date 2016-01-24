@@ -1,0 +1,60 @@
+#!/bin/bash
+MAXDEPTH=$1
+PREFIX="https://proofwiki.org/wiki/"
+SUFFIX="?action=raw"
+CATDEL="Category:"
+CURLFLAGS="-s -L" # L: follow redirects (300 status)
+
+re='^-?[0-9]+$'
+if ! [[ $MAXDEPTH =~ $re ]] ; then
+	echo "error: Max depth '$MAXDEPTH' not a number" >&2; exit 1
+fi
+
+if [ "0" -gt "$MAXDEPTH" ] ; then
+	exit 0
+fi
+
+TITLE=$2
+# Process this entry
+echo "$MAXDEPTH	$TITLE"
+TITLE=$(echo $TITLE | tr ' ' '_')
+NAME=$(echo $TITLE | tr -cd '[[:alnum:]]._')
+echo "	Fetch: $PREFIX$TITLE$SUFFIX"
+PAGE=`curl $CURLFLAGS "$PREFIX$TITLE$SUFFIX"`
+echo "$PAGE" > $NAME
+
+# Handle entries that contain spaces
+IFS=$'\n'
+# MediaWiki links to other articles are of the form [[TITLE]]
+arr=($(grep -o "\[\[[^][]*\]\]" $NAME))
+#arr=("${arr[@]%%:*}")
+unset IFS
+
+# Prepare the arguments for the next call
+ARGS=
+SIZE=${#arr[@]}
+echo "	"Outbound links: $SIZE
+TEMP=$((MAXDEPTH - 1))
+for i in $(seq 1 $SIZE); do
+	arg=${arr[$i]}
+	if [ "" = "$arg" ] ; then
+		continue
+	fi
+	# Remove everything after the pipe
+	arg=$(echo $arg | sed 's/|.*//')
+	arg=$(echo $arg | tr ' ' '_')
+	# Remove all brackets
+	arg=$(echo $arg | tr '[' ' ')
+	arg=$(echo $arg | tr ']' ' ')
+
+	if [ "0" -eq `echo $arg | grep "Category:" | wc -l` ]; then
+		echo "	"$0 $TEMP $arg >&2
+		/bin/bash $0 $TEMP $arg
+	fi
+
+done
+	#ARGS=$(printf " %s" "${arr[@]}")
+# Remove category link pages
+	#ARGS=$(echo $ARGS | sed 's/Category:.*//')
+
+# Process the other entries
