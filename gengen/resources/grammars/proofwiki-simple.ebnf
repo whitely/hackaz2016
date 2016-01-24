@@ -1,8 +1,8 @@
 (* this picks out the shit we care about! *)
 
-document     ::= html_comment? #'\s+'? section section
+document     ::= html_comment? #'\s+'? section+
 
-html_comment ::= #'<!--.*?-->'
+html_comment ::= #'(?s)<!--.*?-->'
 word         ::= #'[\p{ASCII}&&[\p{Alnum}\p{Punct}]]+'
 
 header       ::= '=' (header | header_text ) '='
@@ -10,5 +10,11 @@ header_text  ::= #'\s+' claim #'\s+'
 claim        ::= #'[Dd]efinition' | #'[Pp]roof' | #'[Tt]heorem'
 
 
-section = header #'[\p{Space}]'? section_content+ ( &header | #'\z')
-section_content = #'[\s\p{Print}]'+
+<section>         ::= header #'[\p{Space}]'* section_content <whitespace>* ( (&header) | #'\z')
+(* section_content ::= (inlink / (<whitespace> | content_char))* *)
+section_content ::= (inlink / <content_char>*)*
+inlink          ::= #'(?s)\[\[.*?]]'
+<content_char>  ::= #'[\p{Print}\s]'
+whitespace      ::= #'\s+'
+
+reserved        ::= '[[' | '==='
