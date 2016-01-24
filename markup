@@ -37,6 +37,9 @@ echo "	"Outbound links: $SIZE
 TEMP=$((MAXDEPTH - 1))
 for i in $(seq 1 $SIZE); do
 	arg=${arr[$i]}
+	if [ "" = "$arg" ] ; then
+		continue
+	fi
 	# Remove everything after the pipe
 	arg=$(echo $arg | sed 's/|.*//')
 	arg=$(echo $arg | tr ' ' '_')
@@ -45,7 +48,7 @@ for i in $(seq 1 $SIZE); do
 	arg=$(echo $arg | tr ']' ' ')
 
 	if [ "0" -eq `echo $arg | grep "Category:" | wc -l` ]; then
-		echo "	"$0 $TEMP $arg
+		echo "	"$0 $TEMP $arg >&2
 		/bin/bash $0 $TEMP $arg
 	fi
 
