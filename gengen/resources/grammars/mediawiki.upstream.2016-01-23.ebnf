@@ -1,0 +1,96 @@
+(*  This is an EBNF grammar of of mediawiki's wikitext format (there is no standard wikitext format)
+    it is essentially ripped from https://www.mediawiki.org/wiki/Markup_spec/EBNF under the terms of the CC-BY-SA license *)
+
+(* general *)
+digit         = ("1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"0");
+URL           = { ASCII letter }, "://", { URL char };
+ASCII letter  = ("a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m"
+                | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+                | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M"
+                | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z");
+URL char      = (ASCII letter | digit | "-" | "_" | "." | "~" | "!" | "*" | "'" | "(" | ")" | ";"
+                | ":" | "@" | "&" | "=" | "+" | "$" | "," | "/" | "?" | "%" | "#" | "[" | "]");
+Unicode char  = (* Assume this is all valid Unicode characters. *);
+text          = { Unicode char };
+
+full pagename = [ namespace, ":" | ":" ] pagename;
+namespace     = Unicode char, { Unicode char };
+pagename      = Unicode char, { Unicode char };
+
+
+(* links *)
+start link    = "[[";
+end link      = "]]";
+internal link = start link, full pagename, ["|", label], end link, label extension;
+external link = URL | (start link, URL, [whitespace Label], endLink, label extension);
+redirect      = "#REDIRECT", internal link;
+header link   = "/*", text, "*/";
+ISBN link     = digit, ["-"|" "], 3 * digit, ["-"|" "], 5 * digit,
+                [("-"|" "),(digit|"X"|"x")];
+
+(* headers *)
+header end  = [whitespace], line break;
+header6     = line break, "======", [whitespace], text, [whitespace], "======", header end;
+header5     = line break, "=====",  [whitespace], text, [whitespace], "=====",  header end;
+header4     = line break, "====",   [whitespace], text, [whitespace], "====",   header end;
+header3     = line break, "===",    [whitespace], text, [whitespace], "===",    header end;
+header2     = line break, "==",     [whitespace], text, [whitespace], "==",     header end;
+header1     = line break, "=",      [whitespace], text, [whitespace], "=",      header end;
+comment     = "<!--", [Text], "-->";
+Commentary  = "<comment", [Text], ">", [Text], "</comment>"; (* This works? *)
+
+(* formatting *)
+horizontal rule  = "----", {"-"};
+bold italic text = "'''''", text, "'''''";
+bold text        = "'''", text, "'''";
+italic text      = "''", text, "''";
+code line        = linebreak, " ", text;
+nowiki           = "<nowiki>", text, "</nowiki>";
+
+(* lists *)
+unordered list           = "*", text;
+continue unordered list  = (unordered list|continue unordered list|":"|"*"|"#"),
+                           linebreak, unordered list;
+ordered list             = "#", text;
+continue ordered list    = (ordered list|continue ordered list|":"|"*"|"#"),
+                           linebreak, ordered list;
+definition list          = [text], ":", text;
+continue definition list = (definition list|continue definition list|":"|"*"|"#"),
+                           linebreak, definition list;
+
+(* user signatures *)
+user signature           = "~~~";
+user signature with date = "~~~~";
+current date             = "~~~~~";
+
+
+(* includes *)
+include  = ( template | tplarg ) ;
+template = "{{", title, { "|", part }, "}}" ;
+tplarg   = "{{{", title, { "|", part }, "}}}" ;
+part     = [ name, "=" ], value ;
+title    = balanced text ;
+name     = balanced text ;
+value    = balanced text ;
+balanced text = text without consecutive equal braces, { include, text without consecutive equal braces } ;
+
+
+(* behavior switches *)
+place TOC            = {whitespace|linebreak}, "__TOC__",           {whitespace|linebreak};
+force TOC            = {whitespace|linebreak}, "__FORCETOC__",      {whitespace|linebreak};
+disable TOC          = {whitespace|linebreak}, "__NOTOC__",         {whitespace|linebreak};
+disable section edit = {whitespace|linebreak}, "__NOEDITSECTION__", {whitespace|linebreak};
+
+(* tables *)
+table start       = "{|", {style|whitespace}, linebreak;
+table end         = "|}";
+table caption     = "|+", text, linebreak;
+table header cell = (linebreak, "!", ({style|whitespace}- "|"), text)
+                  | (tablecell, ("!!" | "||"), ({style|whitespace}- "|"), text);
+table cell        = (linebreak, "|", ({style|whitespace}- "|"), text)
+                  | (table cell, "||", ({style|whiteSpace}- "|"), text);
+table row         = linebreak, "|-", {"-"}, {style|whitespace}, linebreak;
+
+table body        = ( table header cell | table cell ),
+                    { table row, ( table header cell | table cell ) };
+table             = table start, [table caption], [table row], table body, table end;
