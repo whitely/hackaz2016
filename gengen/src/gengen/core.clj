@@ -7,7 +7,7 @@
   [& args]
   (println "Hello, World!"))
 
-(def depscan (insta/parser "resources/pw-dep.ebnf"))
+(def depscan (insta/parser "resources/grammars/wikitext.ebnf"))
 
-(insta/parse depscan (slurp "resources/pw-dep.ebnf"))
+(insta/parse depscan (slurp "resources/samples/01-Area_of_Triangle_in_Terms_of_Circumradius.wikitext"))
 

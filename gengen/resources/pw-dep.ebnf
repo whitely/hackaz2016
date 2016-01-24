@@ -1,6 +1,0 @@
-(*  simple grammar for identifying logical dependencies in ProofWiki
-    articles, presented in extended backus-naur form *)
-
-qualifier ::=   by | follows
-by        ::=   #'([Bb]y|due to)'
-follows   ::=   #'follows from'
