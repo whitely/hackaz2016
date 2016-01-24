@@ -1,0 +1,62 @@
+(*  This is an ABNF grammar of of mediawiki's wikitext format (there is no standard wikitext format)
+    it is essentially ripped from https://www.mediawiki.org/wiki/Preprocessor_ABNF under the terms of the CC-BY-SA license *)
+
+; START = start of string
+; END = end of string
+; LINE-START = start of line
+; LINE-END = end of line
+;
+; The string starts with LINE-START. An LF input produces the tokens
+; LINE-END LF LINE-START, and the string ends with LINE-END.
+;
+; The starting symbol of the grammar is wikitext-L1.
+
+xml-char = %x9 / %xA / %xD / %x20-D7FF / %xE000-FFFD / %x10000-10FFFF
+sptab = SP / HTAB
+
+; everything except ">" (%x3E)
+attr-char = %x9 / %xA / %xD / %x20-3D / %x3F-D7FF / %xE000-FFFD / %x10000-10FFFF
+
+literal         = *xml-char
+title           = wikitext-L3
+part-name       = wikitext-L3
+part-value      = wikitext-L3
+part            = ( part-name "=" part-value ) / ( part-value )
+parts           = [ title *( "|" part ) ]
+tplarg          = "{{{" parts "}}}"
+template        = "{{" parts "}}"
+link            = "[[" wikitext-L3 "]]"
+
+comment         = "<!--" literal "-->"
+unclosed-comment = "<!--" literal END
+; the + in the line-eating-comment rule was absent between MW 1.12 and MW 1.22
+line-eating-comment = LF LINE-START *SP +( comment *SP ) LINE-END
+
+attr            = *attr-char
+nowiki-element  = "<nowiki" attr ( "/>" / ( ">" literal ( "</nowiki>" / END ) ) )
+; ...and similar rules added by XML-style extensions.
+
+xmlish-element  = nowiki-element / ... extensions ...
+
+heading = LINE-START heading-inner [ *sptab comment ] *sptab LINE-END
+
+heading-inner   =       "=" wikitext-L3 "="                /
+                        "==" wikitext-L3 "=="              /
+                        "===" wikitext-L3 "==="            /
+                        "====" wikitext-L3 "===="          /
+                        "=====" wikitext-L3 "====="        /
+                        "======" wikitext-L3 "======"
+
+; wikitext-L1 is a simple proxy to wikitext-L2, except in inclusion mode, where it
+; has a role in <onlyinclude> syntax (see below)
+wikitext-L1     = wikitext-L2 / *wikitext-L1
+wikitext-L2     = heading / wikitext-L3 / *wikitext-L2
+wikitext-L3     = literal / template / tplarg / link / comment /
+                  line-eating-comment / unclosed-comment / xmlish-element /
+                  *wikitext-L3
+
+(* noninclusion mode *)
+includeonly-element             = "<includeonly" attr ( "/>" / ( ">" literal ( "</includeonly>" / END ) ) )
+noninclusion-ignored-tag        = "<noinclude>" / "</noinclude>" / "<onlyinclude>" / "</onlyinclude>"
+xmlish-element                  =/ includeonly-element
+wikitext-L3                     =/ noninclusion-ignored-tag

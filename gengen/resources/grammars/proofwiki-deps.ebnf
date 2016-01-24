@@ -3,4 +3,4 @@
 
 qualifier ::=   by | follows
 by        ::=   #'([Bb]y|due to)'
-follows   ::=   #'follows from'
+follows from   ::=   #'follows from'
